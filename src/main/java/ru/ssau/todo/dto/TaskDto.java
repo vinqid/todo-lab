@@ -1,0 +1,65 @@
+package ru.ssau.todo.dto;
+
+import ru.ssau.todo.entity.TaskStatus;
+
+import java.time.LocalDateTime;
+
+public class TaskDto {
+
+    private Long id;
+    private String title;
+    private TaskStatus status;
+    private Long createdBy;
+    private LocalDateTime createdAt;
+
+    public TaskDto() {
+    }
+
+    public TaskDto(Long id, String title, TaskStatus status, Long createdBy, LocalDateTime createdAt) {
+        this.id = id;
+        this.title = title;
+        this.status = status;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+}
