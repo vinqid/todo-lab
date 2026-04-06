@@ -1,6 +1,8 @@
 package ru.ssau.todo.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.todo.dto.TaskCreateDto;
 import ru.ssau.todo.dto.TaskDto;
 import ru.ssau.todo.service.TaskService;
 
@@ -21,8 +23,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskDto create(@RequestBody TaskDto taskDto) {
-        return taskService.create(taskDto);
+    public TaskDto create(@RequestBody TaskCreateDto taskCreateDto, Authentication authentication) {
+        return taskService.create(taskCreateDto, authentication.getName());
     }
 
     @GetMapping("/{id}")
@@ -37,10 +39,10 @@ public class TaskController {
             @RequestParam(required = false) LocalDateTime to
     ) {
         if (from == null) {
-            from = (from == null) ? DEFAULT_FROM : from;
+            from = DEFAULT_FROM;
         }
         if (to == null) {
-            to = (to == null) ? DEFAULT_TO : to;
+            to = DEFAULT_TO;
         }
 
         return taskService.findAll(from, to, userId);

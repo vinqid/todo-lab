@@ -1,8 +1,10 @@
 package ru.ssau.todo.service;
 
 import org.springframework.stereotype.Service;
+import ru.ssau.todo.dto.TaskCreateDto;
 import ru.ssau.todo.dto.TaskDto;
 import ru.ssau.todo.entity.Task;
+import ru.ssau.todo.entity.TaskStatus;
 import ru.ssau.todo.entity.User;
 import ru.ssau.todo.exception.TaskNotFoundException;
 import ru.ssau.todo.repository.TaskRepository;
@@ -22,12 +24,12 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public TaskDto create(TaskDto dto) {
-        User user = userRepository.findById(dto.getCreatedBy())
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден: " + dto.getCreatedBy()));
+    public TaskDto create(TaskCreateDto dto, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден: " + username));
 
-        if ((dto.getStatus() == ru.ssau.todo.entity.TaskStatus.OPEN
-                || dto.getStatus() == ru.ssau.todo.entity.TaskStatus.IN_PROGRESS)
+        if ((dto.getStatus() == TaskStatus.OPEN
+                || dto.getStatus() == TaskStatus.IN_PROGRESS)
                 && taskRepository.countActiveTasksByUserId(user.getId()) >= 10) {
             throw new IllegalStateException("У пользователя уже есть 10 активных задач");
         }
@@ -48,12 +50,6 @@ public class TaskService {
         return toDto(task);
     }
 
-//    public TaskDto findByUsername(String username) {
-//        Task task = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new TaskNotFoundException(username));
-//        return toDto(task);
-//    }
-
     public List<TaskDto> findAll(LocalDateTime from, LocalDateTime to, long userId) {
         return taskRepository.findAllByCreatedAtBetweenAndUserId(from, to, userId)
                 .stream()
@@ -73,9 +69,11 @@ public class TaskService {
     }
 
     public void delete(long id) {
+
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
+        // Проверка, что задача не была создана менее 5 минут назад
         if (task.getCreatedAt().isAfter(LocalDateTime.now().minusMinutes(5))) {
             throw new IllegalStateException("Задача не может быть удалена в течение 5 минут после создания");
         }

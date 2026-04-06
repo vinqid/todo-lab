@@ -16,10 +16,13 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
+    @Column(nullable = false)
+    private String password;
+
     @OneToMany(mappedBy = "createdBy") //связь уже описана на другой стороне и текущая сторона является обратной.
     private List<Task> tasks = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -30,9 +33,10 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username) {
+    public User(Long id, String username, String password) {
         this.id = id;
         this.username = username;
+        this.password = password;
     }
 
     public Long getId() {
@@ -65,5 +69,13 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
