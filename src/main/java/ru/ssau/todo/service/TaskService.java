@@ -57,6 +57,16 @@ public class TaskService {
                 .toList();
     }
 
+    public List<TaskDto> findAllForCurrentUser(LocalDateTime from, LocalDateTime to, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден: " + username));
+
+        return taskRepository.findAllByCreatedAtBetweenAndUserId(from, to, user.getId())
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
     public TaskDto update(long id, TaskDto dto) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
@@ -79,6 +89,13 @@ public class TaskService {
         }
 
         taskRepository.deleteById(id);
+    }
+
+    public long countActiveTasksByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден: " + username));
+
+        return taskRepository.countActiveTasksByUserId(user.getId());
     }
 
     public long countActiveTasksByUserId(long userId) {

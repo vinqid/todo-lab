@@ -32,6 +32,22 @@ public class TaskController {
         return taskService.findById(id);
     }
 
+    @GetMapping("/my")
+    public List<TaskDto> findMyTasks(
+            Authentication authentication,
+            @RequestParam(required = false) LocalDateTime from,
+            @RequestParam(required = false) LocalDateTime to
+    ) {
+        if (from == null) {
+            from = DEFAULT_FROM;
+        }
+        if (to == null) {
+            to = DEFAULT_TO;
+        }
+
+        return taskService.findAllForCurrentUser(from, to, authentication.getName());
+    }
+
     @GetMapping
     public List<TaskDto> findAll(
             @RequestParam long userId,
@@ -56,6 +72,11 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable long id) {
         taskService.delete(id);
+    }
+
+    @GetMapping("/my/active/count")
+    public long countMyActive(Authentication authentication) {
+        return taskService.countActiveTasksByUsername(authentication.getName());
     }
 
     @GetMapping("/active/count")

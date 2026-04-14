@@ -41,7 +41,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/me").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasRole("ADMIN")
                         .requestMatchers("/tasks/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/*/tasks/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
+
                 )
                 .httpBasic(httpBasic -> {})
                 .formLogin(form -> {});

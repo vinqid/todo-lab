@@ -74,4 +74,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
     }
+
+    public List<UserDto> findAll() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserDto(user.getId(), user.getUsername(), null))
+                .toList();
+    }
 }

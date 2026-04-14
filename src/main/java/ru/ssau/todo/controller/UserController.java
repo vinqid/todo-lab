@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.ssau.todo.dto.UserDto;
 import ru.ssau.todo.service.CustomUserDetailsService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -19,5 +21,10 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto register(@RequestBody UserDto userDto) {
         return userDetailsService.register(userDto);
+    }
+
+    @GetMapping
+    public List<UserDto> findAll() {
+        return userDetailsService.findAll();
     }
 }
